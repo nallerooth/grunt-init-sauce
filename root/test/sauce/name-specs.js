@@ -68,7 +68,7 @@ describe('{%= name %} (' + desired.browserName + ')', function() {
             .get("http://nodejs.org/")
             .title()
             .should.become("Node.js")
-            .elementById("intro")
+            .elementById("home-intro")
             .text()
             .should.eventually.include('JavaScript runtime')
             .nodeify(done);
@@ -78,21 +78,21 @@ describe('{%= name %} (' + desired.browserName + ')', function() {
 
         it("should go to the doc page (" + i + ")", function(done) {
             browser
-                .elementById('docsbutton')
+                .elementByCss('header nav a[href="/en/docs/"]')
                 .click()
-                .waitForElementByCss("#content header", wd.asserters.textInclude('Manual'), 10000)
+                .waitForElementById("about-docs", wd.asserters.textInclude('About Docs'), 10000)
                 .title()
-                .should.eventually.include("Manual")
+                .should.eventually.include("Docs")
                 .nodeify(done);
         });
 
         it("should return to the home page(" + i + ")", function(done) {
             browser
-                .elementByCss('#nav ul li a')
+                .elementByCss('header nav a')
                 .click()
-                .waitForElementById("intro", wd.asserters.textInclude('JavaScript runtime'), 10000)
+                .waitForElementById("home-intro", wd.asserters.textInclude('JavaScript runtime'), 10000)
                 .title()
-                .should.not.eventually.include("Manual")
+                .should.not.eventually.include("Docs")
                 .nodeify(done);
         });
 
