@@ -1,25 +1,25 @@
 var wd = require('wd');
 require('colors');
-var _ = require("lodash");
-var chai = require("chai");
-var chaiAsPromised = require("chai-as-promised");
+var _ = require('lodash');
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
 
 chai.use(chaiAsPromised);
 chai.should();
 chaiAsPromised.transferPromiseness = wd.transferPromiseness;
 
 // checking sauce credential
-if(!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY){
+if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
     console.warn(
         '\nPlease configure your sauce credential:\n\n' +
         'export SAUCE_USERNAME=<SAUCE_USERNAME>\n' +
         'export SAUCE_ACCESS_KEY=<SAUCE_ACCESS_KEY>\n\n'
     );
-    throw new Error("Missing sauce credentials");
+    throw new Error('Missing sauce credentials');
 }
 
 // http configuration, not needed for simple runs
-wd.configureHttp( {
+wd.configureHttp({
     timeout: 60000,
     retryDelay: 15000,
     retries: 5
@@ -36,15 +36,15 @@ describe('{%= name %} (' + desired.browserName + ')', function() {
     before(function(done) {
         var username = process.env.SAUCE_USERNAME;
         var accessKey = process.env.SAUCE_ACCESS_KEY;
-        browser = wd.promiseChainRemote("ondemand.saucelabs.com", 80, username, accessKey);
-        if(process.env.VERBOSE){
-            // optional logging     
+        browser = wd.promiseChainRemote('ondemand.saucelabs.com', 80, username, accessKey);
+        if (process.env.VERBOSE) {
+            // optional logging
             browser.on('status', function(info) {
                 console.log(info.cyan);
             });
             browser.on('command', function(meth, path, data) {
                 console.log(' > ' + meth.yellow, path.grey, data || '');
-            });            
+            });
         }
         browser
             .init(desired)
@@ -52,7 +52,7 @@ describe('{%= name %} (' + desired.browserName + ')', function() {
     });
 
     afterEach(function(done) {
-        allPassed = allPassed && (this.currentTest.state === 'passed');  
+        allPassed = allPassed && (this.currentTest.state === 'passed');
         done();
     });
 
@@ -63,12 +63,12 @@ describe('{%= name %} (' + desired.browserName + ')', function() {
             .nodeify(done);
     });
 
-    it("should get home page", function(done) {
+    it('should get home page', function(done) {
         browser
-            .get("http://nodejs.org/")
+            .get('http://nodejs.org/')
             .title()
-            .should.become("Node.js")
-            .elementById("home-intro")
+            .should.become('Node.js')
+            .elementById('home-intro')
             .text()
             .should.eventually.include('JavaScript runtime')
             .nodeify(done);
@@ -76,23 +76,23 @@ describe('{%= name %} (' + desired.browserName + ')', function() {
 
     _.times(2, function(i) { // repeat twice
 
-        it("should go to the doc page (" + i + ")", function(done) {
+        it('should go to the doc page (' + i + ')', function(done) {
             browser
                 .elementByCss('header nav a[href="/en/docs/"]')
                 .click()
-                .waitForElementById("about-docs", wd.asserters.textInclude('About Docs'), 10000)
+                .waitForElementById('about-docs', wd.asserters.textInclude('About Docs'), 10000)
                 .title()
-                .should.eventually.include("Docs")
+                .should.eventually.include('Docs')
                 .nodeify(done);
         });
 
-        it("should return to the home page(" + i + ")", function(done) {
+        it('should return to the home page(' + i + ')', function(done) {
             browser
                 .elementByCss('header nav a')
                 .click()
-                .waitForElementById("home-intro", wd.asserters.textInclude('JavaScript runtime'), 10000)
+                .waitForElementById('home-intro', wd.asserters.textInclude('JavaScript runtime'), 10000)
                 .title()
-                .should.not.eventually.include("Docs")
+                .should.not.eventually.include('Docs')
                 .nodeify(done);
         });
 
